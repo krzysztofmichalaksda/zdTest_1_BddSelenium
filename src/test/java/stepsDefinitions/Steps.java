@@ -5,8 +5,13 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.junit.Assert;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
+
+import java.util.List;
 
 public class Steps {
 
@@ -23,24 +28,37 @@ public class Steps {
     public void userIsOnGoogle()
     {
         driver.get("https://google.com");
+        String currentUrl = driver.getCurrentUrl();
+        System.out.println("Current Ulr: " + currentUrl);
     }
 
-    @When("the user types sda in google input search")
-    public void step1()
+    @When("the user types {string} in google input search")
+    public void typeTextInInput(String text)
     {
-        System.out.println(">>> Wykonanie korku 1");
+        WebElement input = driver.findElement(By.name("q"));
+        input.sendKeys(text);
+        driver.findElement(By.id("hplogo")).click();
     }
 
     @When("the user clicks on search button")
-    public void step2()
+    public void userClicksOnSearch()
     {
-        System.out.println(">>> Wykonanie korku 2");
+        List<WebElement> searchButtons = driver.findElements(By.name("btnK"));
+        for (WebElement searchButton : searchButtons) {
+            if (searchButton.isDisplayed()) {
+                searchButton.click();
+                break;
+            }
+        }
     }
 
-    @Then("the user should see sdacademy on search results")
-    public void sprawdzenie()
+    @Then("the user should see {string} on search results")
+    public void assertSearchResult(String text)
     {
+        String newXpath = "//*[contains(text(), '" + text + "')]";
+        List<WebElement> searchResults = driver.findElements(By.xpath(newXpath));
 
+        Assert.assertTrue("Searched text is not visible on page", searchResults.size() > 0);
     }
 
     @After
