@@ -1,5 +1,7 @@
 package stepsDefinitions;
 
+import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -10,11 +12,17 @@ public class Steps {
 
     WebDriver driver;
 
-    @Given("a user is on google.com page")
-    public void precondition()
+    @Before
+    public void setUp()
     {
         System.setProperty("webdriver.chrome.driver", "drivers/chromedriver.exe");
         driver = new ChromeDriver();
+    }
+
+    @Given("a user is on google.com page")
+    public void userIsOnGoogle()
+    {
+        driver.get("https://google.com");
     }
 
     @When("the user types sda in google input search")
@@ -32,6 +40,13 @@ public class Steps {
     @Then("the user should see sdacademy on search results")
     public void sprawdzenie()
     {
-        System.out.println(">>> Sprawdzenie wyników");
+
+    }
+
+    @After
+    public void tearDown()
+    {
+        driver.quit();
+        driver = null;
     }
 }
